@@ -1,0 +1,3 @@
+[submodule "android_malware_detectors/detectors"]
+	path = android_malware_detectors/detectors
+	url = git@github.com:s2labres/android_malware_detectors.git
