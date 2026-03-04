@@ -56,8 +56,8 @@ if __name__ == '__main__':
                         required=True, nargs='+')
     parser.add_argument("--start-year", type=int, default=2014)
     parser.add_argument("--end-year", type=int, default=2018)
-    parser.add_argument("--families")
-    parser.add_argument("--save-dir")
+    parser.add_argument("--families", default="data/all_families_db.json")
+    parser.add_argument("--save-dir", default="trained_models/temporal_luck/motivational")
     args = parser.parse_args()
 
     assert (len(args.datasets) * len(args.classifiers_list)) == len(args.datasets_paths)
