@@ -1,0 +1,10 @@
+jsonlines==4.0.0
+matplotlib==3.10.8
+numpy==2.4.2
+pandas==3.0.1
+tensorflow[and-cuda]==2.20.0
+tqdm==4.67.3
+dtw-python==1.7.4
+scipy>=1.15.1
+dtw
+git+ssh://git@github.com/s2labres/android_malware_detectors.git@main#egg=android_malware_detectors

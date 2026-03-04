@@ -14,7 +14,11 @@ from android_malware_detectors.datasets_utils.androzoo_utils import load_androzo
 
 def sample_new_malware_datasets(meta_file_path, azoo_csv_path, output_dir, num_datasets, vtt, emulate_transcendent):
     malware_count_by_month = get_malware_count_by_month_year(meta_file_path)
-    malware_by_month = get_available_malware_by_month_year(azoo_csv_path, vtt, emulate_transcendent)
+    az_dict = load_androzoo_info_by_keys(
+        azoo_csv_path, keys=["vt_detection", "dex_date", "added", "vt_scan_date"],
+        output_dir="../", crawl_date_present=True
+    )
+    malware_by_month = get_available_malware_by_month_year(az_dict, vtt, emulate_transcendent)
     for dataset_index in tqdm.tqdm(range(num_datasets)):
         current_date = date(day=1, month=1, year=2014)
         current_dataset = []
@@ -24,7 +28,8 @@ def sample_new_malware_datasets(meta_file_path, azoo_csv_path, output_dir, num_d
             current_dataset.extend(malware)
             current_date += timedelta(31)
             current_date = date(year=current_date.year, month=current_date.month, day=1)
-        datasets_file_path = os.path.join(output_dir, f"{dataset_index + 1}.json")
+        datasets_file_path = os.path.join(output_dir, f"meta_{dataset_index + 1}.json")
+        meta_file = make_meta_file(current_dataset, az_dict)
         dump_json(datasets_file_path, current_dataset)
 
 
@@ -49,11 +54,7 @@ def get_malware_count_by_month_year(meta_file):
     return malware_by_month
 
 
-def get_available_malware_by_month_year(azoo_csv_path, vtt, emulate_transcendent):
-    az_dict = load_androzoo_info_by_keys(
-        azoo_csv_path, keys=["vt_detection", "dex_date", "added", "vt_scan_date"],
-        output_dir="../", crawl_date_present=True
-    )
+def get_available_malware_by_month_year(az_dict, vtt, emulate_transcendent):
     malware_by_month = defaultdict(list)
     for sha, entry in az_dict.items():
         if emulate_transcendent:
@@ -97,9 +98,17 @@ def get_month_year(date_object):
     return f"{datetime_object.year}-{datetime_object.month}"
 
 
+def make_meta_file(current_dataset, az_dict):
+    meta = {}
+    for sha_256 in current_dataset:
+        entry = az_dict[sha_256.lower()]
+        meta[sha_256.lower()] = {"dex_date": entry["dex_date"], "vt_detection": entry["vt_detection"]}
+    return meta
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--num-datasets", type=int, default=5)
+    parser.add_argument("--num-datasets", type=int, default=3)
     parser.add_argument("--vtt", type=int, default=4)
     args = parser.parse_args()
 

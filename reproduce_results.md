@@ -23,4 +23,26 @@ install dependencies.
 
 #### Experiment 1
 
-In `data/timestamps/experiments_1`
+In `data/timestamps/experiments_1`, you will find two folders:
+1. `transcend_emulation`
+2. `transcend_sampled_today`
+
+which contain 5 datasets, each sampled according to Section IV.B.
+
+All 10 datasets can also be resampled from scratch by running: `python -m experiments.timestamps.experiment_1.dataset_sampler`.
+
+To plot Figure 3 in the paper, run:
+`python -m experiments.timestamps.experiment_1.figure_3_generator`
+
+
+#### Experiment 2
+
+To generate Table II in Section IV.B. run:
+
+`python -m experiments.timestamps.experiment_2.table_2_generator`
+
+To generate Table III in Section IV.B. run:
+
+`python -m experiments.timestamps.experiment_2.table_3_generator`.
+
+
