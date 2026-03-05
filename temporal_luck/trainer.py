@@ -8,6 +8,8 @@ import tqdm
 from android_malware_detectors.datasets_utils.dataset_builder import get_labels_from_meta, get_shas_in_time_frame
 from android_malware_detectors.utils import LoggerManager
 
+from temporal_luck.temporal_windows import training_slice_iterator
+
 
 def train_all_models(classifiers_list, dataset_names, dataset_paths_list, meta_file_paths_list, vtts,
                      start_year, end_year, date_types, save_dir, families, compact_data):
@@ -24,20 +26,20 @@ def train_all_models(classifiers_list, dataset_names, dataset_paths_list, meta_f
                         families, compact_data)
 
 
-def train_model(classifier_type, dataset_path, meta_file_path, vtt, start_year, end_year,
+def train_model(classifier_type, dataset_path, meta_file_path, vtt, dataset_min_date, dataset_max_date,
+                training_window_length, test_window_length, time_granularity, time_granularity_value,
                 date_type, root_model_save_path, families, compact_data):
     model_class = get_model_class(classifier_type)
 
-    for year in range(start_year, end_year):
-        model_save_path = os.path.join(root_model_save_path, f"{year}")
+    for start_date, end_date in training_slice_iterator(dataset_min_date, dataset_max_date, training_window_length,
+                                                        test_window_length, time_granularity, time_granularity_value):
+        model_save_path = os.path.join(root_model_save_path, f"{start_date.year}")
         os.makedirs(model_save_path, exist_ok=True)
         if len(os.listdir(model_save_path)) > 0:
             LoggerManager().get_logger(__name__).info("already trained --- skipping")
             continue
         model = model_class(model_save_path)
 
-        start_date = date(day=1, month=1, year=year)
-        end_date = date(day=31, month=12, year=year)
         labels = get_labels_from_meta(dataset_path, vtt, start_date, end_date, date_type, meta_file_path)
         samples_hashes_list = get_shas_in_time_frame(dataset_path, start_date, end_date, date_type, meta_file_path)
 

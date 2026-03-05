@@ -63,7 +63,7 @@ def evaluate_dataset_by_year(classifier_type, root_classifier_dir, dataset_path,
         classifier.load()
 
         time_aware_evaluation_results = classifier.evaluate_time_aware(dataset_path, labels_dict, samples_by_date_dict)
-        dump_pickle(time_aware_evaluation_results, save_path)
+        dump_pickle(save_path, time_aware_evaluation_results)
 
 
 if __name__ == '__main__':

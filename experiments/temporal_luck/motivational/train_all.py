@@ -21,4 +21,4 @@ if __name__ == '__main__':
     families = "data/all_families_db.json"
     start_year, end_year = 2014, 2018
     train_all_models(classifiers_list, datasets, datasets_paths, meta_paths, vtts,
-                     start_year, end_year, date_types, save_dir, families)
+                     start_year, end_year, date_types, save_dir, families, compact_data=False)

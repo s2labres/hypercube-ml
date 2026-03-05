@@ -18,7 +18,7 @@ if __name__ == '__main__':
     meta_paths = ["data/meta_files/apigraph_meta.json", "data/meta_files/transcendent_meta.json"]
     vtts = [15, 4]
     date_types = ["vt_first_submission_date", "dex_date"]
-    save_dir = "trained_models/temporal_luck/motivational"
+    save_dir = "evaluation_results/temporal_luck/motivational"
     families = "data/all_families_db.json"
     start_year, end_year = 2014, 2017
     evaluate_all_models(classifiers_list, classifiers_path_root, datasets, datasets_paths, meta_paths,
