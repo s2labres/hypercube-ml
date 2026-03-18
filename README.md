@@ -90,22 +90,20 @@ To compute the **A-AUT** for your newly defined malware detector, you can use th
 1. `temporal_luck.trainer.train_model` for training your model across all time splits.
 2. `temporal_luck.trainer.test_model` for evaluating your model across all time splits
 
-
 ```python
 import os
 
-from temporal_luck.trainer import train_model
+from temporal_luck.trainer import train_classifier
 from temporal_luck.temporal_windows import training_slice_iterator
-
 
 for start_date, end_date in training_slice_iterator():
     save_dir = f"save_dir-{start_date}-{end_date}/"
     os.makedirs(save_dir, exist_ok=True)
     my_model = MyNewMalwareDetector(save_dir)
-    
+
     dataset = []
     labels = []
-    
+
 ```
 
 

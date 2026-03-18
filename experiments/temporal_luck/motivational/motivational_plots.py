@@ -122,5 +122,5 @@ if __name__ == '__main__':
     argument_parser.add_argument("--results-dir", default="evaluation_results/temporal_luck/motivational/")
     args = argument_parser.parse_args()
     os.makedirs(args.results_dir, exist_ok=True)
-    _save_path = f"experiment_outputs/temporal_luck/motivational_{args.model_name}_{args.dataset_name}_plot.pdf"
+    _save_path = f"experiment_outputs/temporal_luck/motivational_{args.model_name}_{args.dataset_name}_plot.svg"
     plot_f1s(args.results_dir, args.model_name, args.dataset_name, _save_path)

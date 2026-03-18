@@ -1,6 +1,4 @@
-import datetime
-
-from temporal_luck.trainer import train_all_classifiers
+from experiments.temporal_luck.motivational.train_models import train_all_models
 
 
 if __name__ == '__main__':
@@ -19,10 +17,8 @@ if __name__ == '__main__':
     meta_paths = ["data/meta_files/apigraph_meta.json", "data/meta_files/transcendent_meta.json"]
     vtts = [15, 4]
     date_types = ["vt_first_submission_date", "dex_date"]
-    save_dir = "trained_models/temporal_luck/NEW_motivational"
+    save_dir = "trained_models/temporal_luck/motivational"
     families = "data/all_families_db.json"
-    start_date, end_date = datetime.date(2014, 1, 1), datetime.date(2018, 12, 31)
-    train_all_classifiers(classifiers_list, datasets, datasets_paths, meta_paths, vtts,
-                          start_date, end_date, training_window_length=12, test_window_length=12,
-                          time_granularity="monthly", time_granularity_value=1, date_types=date_types,
-                          save_dir=save_dir, families=families, compact_data=False)
+    start_year, end_year = 2014, 2018
+    train_all_models(classifiers_list, datasets, datasets_paths, meta_paths, vtts,
+                     start_year, end_year, date_types, save_dir, families, compact_data=False)
