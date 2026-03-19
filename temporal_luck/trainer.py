@@ -10,6 +10,7 @@ from android_malware_detectors.datasets_utils.dataset_builder import get_labels_
 from android_malware_detectors.utils import LoggerManager
 
 from temporal_luck.temporal_windows import training_slice_iterator
+from temporal_luck.utils import make_file_path
 
 
 def train_all_classifiers(classifiers_list, dataset_names, dataset_paths_list, meta_file_paths_list, vtts,
@@ -35,7 +36,7 @@ def train_classifier(classifier_type, dataset_path, meta_file_path, vtt, dataset
 
     for start_date, end_date in training_slice_iterator(dataset_min_date, dataset_max_date, training_window_length,
                                                         test_window_length, time_granularity, time_granularity_value):
-        model_save_path = os.path.join(root_model_save_path, f"{start_date.year}")
+        model_save_path = make_file_path(root_model_save_path, start_date, end_date)
         os.makedirs(model_save_path, exist_ok=True)
         if len(os.listdir(model_save_path)) > 0:
             LoggerManager().get_logger(__name__).info("already trained --- skipping")
