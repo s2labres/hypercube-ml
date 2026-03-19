@@ -39,7 +39,7 @@ def evaluate_all_models(classifiers_list, classifiers_path_root, dataset_names_l
             classifier_results = evaluate_classifier(classifier_type, classifier_dir, dataset_path, meta_file_path,
                                                      start_date, end_date, date_type, vtt, output_dir)
             a_aut, std_aut = average_aut(classifier_results, "f1", start_date, end_date, time_granularity, time_granularity_value)
-            print(f"A-AUT {}")
+            print(f"A-AUT {a_aut}")
 
 
 def evaluate_classifier(classifier_type, root_classifier_dir, dataset_path, meta_file_path, start_date, end_date,

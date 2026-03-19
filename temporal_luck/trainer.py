@@ -1,54 +1,9 @@
-import os
 import argparse
 
 from android_malware_detectors.datasets_utils.dates import parse_date
 
 from experiments.utils import get_model_class
-
-import tqdm
-from android_malware_detectors.datasets_utils.dataset_builder import get_labels_from_meta, get_shas_in_time_frame
-from android_malware_detectors.utils import LoggerManager
-
-from temporal_luck.temporal_windows import training_slice_iterator
-from temporal_luck.utils import make_file_path
-
-
-def train_all_classifiers(classifiers_list, dataset_names, dataset_paths_list, meta_file_paths_list, vtts,
-                          start_date, end_date, training_window_length, test_window_length, time_granularity,
-                          time_granularity_value, date_types, save_dir, families, compact_data):
-    for index, classifier_type in enumerate(classifiers_list):
-        dataset_index = index * len(dataset_names)
-        dataset_paths = dataset_paths_list[dataset_index:dataset_index + len(dataset_names)]
-        iterator = zip(dataset_names, dataset_paths, meta_file_paths_list, vtts, date_types)
-        progressive_iterator = tqdm.tqdm(iterator, total=len(classifiers_list))
-        for dataset_name, dataset_path, meta_file_path, vtt, date_type in progressive_iterator:
-            model_save_dir = os.path.join(save_dir, classifier_type, dataset_name)
-            os.makedirs(model_save_dir, exist_ok=True)
-            train_classifier(classifier_type, dataset_path, meta_file_path, vtt, start_date, end_date,
-                             training_window_length, test_window_length, time_granularity,
-                             time_granularity_value, date_type, model_save_dir, families, compact_data)
-
-
-def train_classifier(classifier_type, dataset_path, meta_file_path, vtt, dataset_min_date, dataset_max_date,
-                     training_window_length, test_window_length, time_granularity, time_granularity_value,
-                     date_type, root_model_save_path, families, compact_data):
-    model_class = get_model_class(classifier_type)
-
-    for start_date, end_date in training_slice_iterator(dataset_min_date, dataset_max_date, training_window_length,
-                                                        test_window_length, time_granularity, time_granularity_value):
-        model_save_path = make_file_path(root_model_save_path, start_date, end_date)
-        os.makedirs(model_save_path, exist_ok=True)
-        if len(os.listdir(model_save_path)) > 0:
-            LoggerManager().get_logger(__name__).info("already trained --- skipping")
-            continue
-        model = model_class(model_save_path)
-
-        labels = get_labels_from_meta(dataset_path, vtt, start_date, end_date, date_type, meta_file_path)
-        samples_hashes_list = get_shas_in_time_frame(dataset_path, start_date, end_date, date_type, meta_file_path)
-
-        model.train(dataset_path, labels, samples_hashes_list=samples_hashes_list,
-                    family_dict_path=families, compact_data=compact_data)
-        model.save()
+from temporal_luck.temporal_luck_evaluator import TemporalLuckEvaluator
 
 
 if __name__ == '__main__':
@@ -97,7 +52,33 @@ if __name__ == '__main__':
     assert (len(args.datasets) * len(args.classifiers_list)) == len(args.datasets_paths)
     assert len(args.meta_paths) == len(args.vtts) == len(args.date_types) == len(args.datasets)
 
-    train_all_classifiers(args.classifiers_list, args.datasets, args.datasets_paths, args.meta_paths,
-                          args.vtts, parse_date(args.start_date), parse_date(args.end_date), args.training_window,
-                          args.test_window, args.time_granularity, args.time_granularity_value, args.date_types,
-                          args.save_dir, args.families, args.compact_data)
+    temporal_luck_evaluator = TemporalLuckEvaluator()
+
+    for classifier in args.classifiers_list:
+        classifier_class = get_model_class(classifier)
+        temporal_luck_evaluator.register_classifier_class(classifier, classifier_class)
+
+    for dataset_name in args.datasets:
+        temporal_luck_evaluator.register_dataset(dataset_name)
+
+    for dataset_name, dataset_meta_path in zip(args.datasets, args.meta_paths):
+        temporal_luck_evaluator.register_meta_path(dataset_name, dataset_meta_path)
+
+    for dataset_name, vtt in zip(args.datasets, args.vtts):
+        temporal_luck_evaluator.register_vtt(dataset_name, vtt)
+
+    for dataset_name, date_type in zip(args.datasets, args.date_types):
+        temporal_luck_evaluator.register_date_type(dataset_name, date_type)
+
+    for classifier_index, classifier in enumerate(args.classifiers_list):
+        datasets_paths = args.datasets_paths[
+            classifier_index * len(args.datasets):(classifier_index + 1) * len(args.datasets)
+        ]
+        for dataset_index, dataset_name in enumerate(args.datasets):
+            temporal_luck_evaluator.register_dataset_for_classifier(
+                dataset_name, classifier, datasets_paths[dataset_index]
+            )
+
+    temporal_luck_evaluator.train_all(parse_date(args.start_date), parse_date(args.end_date), args.training_window,
+                                      args.test_window, args.time_granularity, args.time_granularity_value,
+                                      args.save_dir, args.families, args.compact_data)
