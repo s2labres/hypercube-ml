@@ -129,5 +129,39 @@ temporal_luck_evaluator.evaluate_all(trainined_detectors_dir, dataset_start_date
 ```
 
 
+To sample a new dataset using **STAS**, you can use the `STASSampler` provided with this library.
+You will need a json file describing the population you want to sample from, where each entry contains the 
+hash, timestamp, and number of detections of each sample. For example:
+
+```
+[
+    {
+        "sha256": "e5c7c8e4bfb9822e9cbaf9d6b639a6b10dcfb92ffc67bcf6345efa752c8b3f46",
+        "vt_detection": 15,
+        "dex_date": "2015-12-01"
+    }
+]
+```
+
+Notice that the keys for hashes, timestamps, and number of detections are fully customizable. See the 
+following example:
+
+```python
+import datetime
+
+from hypercube.stas.sampler import STASSampler
+
+
+stas_sampler = STASSampler("path_to_your_population_descriptor_file", 
+                           sample_hash_type="custom_hash_key", 
+                           timestamp_type="custom_timestamp_key",
+                           detections_key="custom_detection_key", vtt=5)
+
+dataset_start_date, dataset_end_date = datetime.date(2021, 1, 1), datetime.date(2023, 1, 1)
+new_dataset_hash_list = stas_sampler.sample_dataset(dataset_start_date, dataset_end_date, time_granularity="monthly",
+                                                    time_granularity_value=1, malware_percentage=0.1)
+```
+
+
 ## 📧 Contact
 For questions regarding the status of this research, please contact Dr Mario D'Onghia at m.donghia@ucl.ac.uk.
