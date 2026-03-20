@@ -1,8 +1,8 @@
 # Hypercube-ML
 
 This repository contains the code for the 
-**Statistically representative, TESSERACT-guided Application Sampling strategy (STAS)** and 
-the **Average Area Under Time (A-AUT)** driven evaluations of malware classifiers as introduced in:
+**Statistically representative, TESSERACT-guided Application Sampling strategy (STAS)** and for performing the rolling time
+window evaluation with the **Average Area Under Time (A-AUT)** as introduced in:
 
 > **"Beyond the TESSERACT: Trustworthy Dataset Curation for Sound Evaluations of Android Malware Classifiers"**
 
@@ -20,6 +20,10 @@ If using this code for research, please cite us:
 ```
 
 Furthermore, the code for reproducing the results in the paper can be found in the `experiments` folder.
+
+The **Hypercube** dataset and all the data used in the paper can be found here:
+
+[Hypercube dataset and paper data](https://liveuclac-my.sharepoint.com/:f:/g/personal/ucacier_ucl_ac_uk/IgDzMmmiN5p9TKbxnEKQXil-AYUPiXFrWDpeJZlawtm0jnQ?e=P9ybkn)
  
 
 ## How-to
@@ -35,10 +39,13 @@ following line to your `requirements` file:
 
 To reproduce the results in the original paper, refer to `experiments/reproduce_results.md`.
 
+*The code and data for experiments on VTT and App Market is not yet available but will soon be released. 
+Please expect this to be made available before 30/04/2026.*
+
 ### Use the library
 
-Both the library and the experiments are built on top of the `Android Malware Detectors` library developed by S2Lab 
-(https://github.com/s2labres/android_malware_detectors). 
+Both the library and the experiments are built on top of the 
+[Android Malware Detectors library](https://github.com/s2labres/android_malware_detectors) developed by S2Lab. 
 To perform A-AUT-based evaluations, we recommend using the library interface.
 
 For example, when implementing a new malware detector, this should extend 
@@ -121,24 +128,6 @@ temporal_luck_evaluator.evaluate_all(trainined_detectors_dir, dataset_start_date
                                      time_granularity, time_granularity_value, training_window_length, test_window_length)
 ```
 
-
-
-## 🔬 Project Overview
-The reliability of machine learning critically depends on dataset quality. While machine learning applied to computer 
-vision and natural language processing benefit from high-quality benchmark datasets, cyber security often falls behind,
-as quality ties to the ability of accessing hard-to-obtain realistic datasets that may evolve over time.
-Android is, however, positioned uniquely in this ecosystem thanks to AndroZoo and other sources, which provide
-large-scale, continuously updated, and timestamped repositories of benign and malicious apps. 
-
-Since their release, such data sources provided access to populations of Android apps that researchers can sample 
-from to evaluate learning-based methods in realistic settings, i.e., over temporal frames to account for apps evolution 
-(natural distribution shift) and test datasets that reflect in-the-wild class ratios. Surprisingly, 
-we observe that despite this abundance of data, performance discrepancies of learning-based Android malware classifiers
-still persist even after satisfying such realistic requirements, which challenges our ability to understand what
-the state-of-the-art in this field is. In this work, we identify five novel factors that influence such discrepancies:
-we show how such factors have been largely overlooked and the impact they have on providing sound evaluations.
-Our findings and recommendations help define a methodology for creating trustworthy datasets towards sound evaluations
-of Android malware classifiers.
 
 ## 📧 Contact
 For questions regarding the status of this research, please contact Dr Mario D'Onghia at m.donghia@ucl.ac.uk.
