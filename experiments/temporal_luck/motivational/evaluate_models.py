@@ -8,7 +8,7 @@ from android_malware_detectors.datasets_utils.dataset_builder import get_labels_
 from android_malware_detectors.datasets_utils.dataset_builder import divide_samples_by_date
 from android_malware_detectors.utils.logging import LoggerManager
 
-from experiments.utils import get_model_class
+from hypercube.utils import get_model_class
 
 
 def evaluate_all_models(classifiers_list, classifiers_path_root, dataset_names_list, dataset_paths_list,

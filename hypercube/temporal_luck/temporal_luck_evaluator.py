@@ -4,11 +4,11 @@ from collections import defaultdict
 from android_malware_detectors.datasets_utils import get_labels_from_meta, get_shas_in_time_frame, \
     divide_samples_by_date
 from android_malware_detectors.detectors.base.base_detector import BaseDetector
-from android_malware_detectors.utils import LoggerManager, dump_pickle
+from android_malware_detectors.utils import LoggerManager, dump_pickle, load_pickle
 
-from temporal_luck.aut import average_aut
-from temporal_luck.temporal_windows import training_slice_iterator, test_slice_iterator
-from temporal_luck.utils import make_file_path
+from hypercube.temporal_luck.aut import average_aut
+from hypercube.temporal_luck.temporal_windows import training_slice_iterator, test_slice_iterator
+from hypercube.temporal_luck.utils import make_file_path
 
 
 class TemporalLuckEvaluator:
@@ -128,8 +128,8 @@ class TemporalLuckEvaluator:
                             such as HCC.
         :param compact_data: whether the data is provided in a compact/sparse way. Currently used for MalScan.
         """
-        for classifier_name in self.classifiers:
-            for dataset_name in self.classifier_to_dataset[classifier_name]:
+        for classifier_name in sorted(self.classifiers):
+            for dataset_name in sorted(self.classifier_to_dataset[classifier_name]):
                 model_save_dir = os.path.join(save_dir, classifier_name)
                 os.makedirs(model_save_dir, exist_ok=True)
                 self.train_classifier(classifier_name, dataset_name, dataset_min_date, dataset_max_date,
@@ -202,8 +202,8 @@ class TemporalLuckEvaluator:
         :param training_window: how many years/months/days in each training splits in the evaluation.
         :param test_window: how many years/months/days in each testing splits in the evaluation.
         """
-        for classifier_name in self.classifiers:
-            for dataset_name in self.datasets:
+        for classifier_name in sorted(self.classifiers):
+            for dataset_name in sorted(self.datasets):
                 LoggerManager.get_logger(__name__).info(f"Classifier={classifier_name} | Dataset={dataset_name}")
                 output_dir = os.path.join(results_save_dir, classifier_name)
                 os.makedirs(output_dir, exist_ok=True)
@@ -212,7 +212,7 @@ class TemporalLuckEvaluator:
                                                               time_granularity_value, training_window,
                                                               test_window, output_dir)
                 a_aut, std_aut = average_aut(classifier_results, "f1", start_date, end_date,
-                                             time_granularity, time_granularity_value)
+                                             time_granularity, test_window)
                 print(f"Classifier: {classifier_name} - Dataset: {dataset_name} - [{start_date}-{end_date}]"
                       f"A-AUT {a_aut} ({std_aut})")
 
@@ -220,21 +220,22 @@ class TemporalLuckEvaluator:
                             time_granularity, time_granularity_value, train_window_length, test_window_length,
                             output_dir, skip_if_non_empty=True):
         results = {}
-        training_iterator = training_slice_iterator(start_date, end_date, time_granularity, time_granularity_value,
-                                                    train_window_length, test_window_length)
-        test_iterator = test_slice_iterator(start_date, end_date, time_granularity, time_granularity_value,
-                                            train_window_length, test_window_length)
+        training_iterator = training_slice_iterator(start_date, end_date, train_window_length, test_window_length,
+                                                    time_granularity, time_granularity_value)
+        test_iterator = test_slice_iterator(start_date, end_date, train_window_length, test_window_length,
+                                            time_granularity, time_granularity_value)
         for training_window, test_window in zip(training_iterator, test_iterator):
             LoggerManager.get_logger(__name__).info(
                 f"Testing model trained on {training_window[0]}-{training_window[1]} "
                 f"on range [{test_window[0]}, {test_window[1]}]")
-            save_path = os.path.join(output_dir, classifier_name, dataset_name)
+            save_path = os.path.join(output_dir, dataset_name)
             save_path = make_file_path(save_path, test_window[0], test_window[1])
             os.makedirs(save_path, exist_ok=True)
             save_path = os.path.join(save_path, f"time_aware_evaluations.pickle")
 
             if skip_if_non_empty and os.path.exists(save_path):
                 LoggerManager.get_logger(__name__).info("already computed --- skipping")
+                results.update(load_pickle(save_path))
                 continue
 
             dataset_path = self.classifier_to_dataset[classifier_name][dataset_name]
@@ -248,7 +249,8 @@ class TemporalLuckEvaluator:
                                                           time_granularity, time_granularity_value, meta_file_path)
 
             classifier_class = self.classifiers_classes[classifier_name]
-            classifier_dir = make_file_path(classifier_dir_path, training_window[0], training_window[1])
+            classifier_dir = os.path.join(classifier_dir_path, classifier_name, dataset_name)
+            classifier_dir = make_file_path(classifier_dir, training_window[0], training_window[1])
             classifier = classifier_class(classifier_dir)
             classifier.load()
 

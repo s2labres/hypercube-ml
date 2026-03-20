@@ -1,13 +1,12 @@
 import datetime
 
-from android_malware_detectors.datasets_utils.dates import parse_date
-
 from hypercube.utils import get_model_class
 from hypercube.temporal_luck.temporal_luck_evaluator import TemporalLuckEvaluator
 
 
 if __name__ == '__main__':
     classifiers_list = ["DrebinSVM", "DeepDrebin", "HCC", "RAMDA", "MalScan"]
+    classifiers_path_root = "trained_models/temporal_luck/motivational"
     datasets = ["APIGraph", "Transcendent"]
     datasets_paths = ["data/datasets/apigraph/apigraph_drebin.json",
                       "data/datasets/transcendent/transcendent_drebin.json",
@@ -22,13 +21,12 @@ if __name__ == '__main__':
     meta_paths = ["data/meta_files/apigraph_meta.json", "data/meta_files/transcendent_meta.json"]
     vtts = [15, 4]
     date_types = ["vt_first_submission_date", "dex_date"]
-    save_dir = "trained_models/temporal_luck/motivational"
+    save_dir = "evaluation_results/temporal_luck/motivational"
     families = "data/all_families_db.json"
     start_date, end_date = datetime.date(2014, 1, 1), datetime.date(2018, 12, 31)
     training_window, test_window, time_granularity, time_granularity_value = 12, 12, "monthly", 1
 
     temporal_luck_evaluator = TemporalLuckEvaluator()
-
     for classifier in classifiers_list:
         classifier_class = get_model_class(classifier)
         temporal_luck_evaluator.register_classifier_class(classifier, classifier_class)
@@ -54,6 +52,6 @@ if __name__ == '__main__':
                 dataset_name, classifier, datasets_paths_for_classifier[dataset_index]
             )
 
-    temporal_luck_evaluator.train_all(parse_date(start_date), parse_date(end_date), training_window,
-                                      test_window, time_granularity, time_granularity_value,
-                                      save_dir, families, compact_data=False)
+    temporal_luck_evaluator.evaluate_all(classifiers_path_root, start_date, end_date, save_dir,
+                                         time_granularity, time_granularity_value,
+                                         training_window, test_window)

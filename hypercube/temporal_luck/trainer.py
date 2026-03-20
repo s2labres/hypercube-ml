@@ -2,8 +2,8 @@ import argparse
 
 from android_malware_detectors.datasets_utils.dates import parse_date
 
-from experiments.utils import get_model_class
-from temporal_luck.temporal_luck_evaluator import TemporalLuckEvaluator
+from hypercube.utils import get_model_class
+from hypercube.temporal_luck.temporal_luck_evaluator import TemporalLuckEvaluator
 
 
 if __name__ == '__main__':

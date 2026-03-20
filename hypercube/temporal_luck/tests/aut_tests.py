@@ -2,7 +2,7 @@ import math
 import unittest
 from datetime import date
 
-from temporal_luck.aut import aut, average_aut
+from hypercube.temporal_luck.aut import aut, average_aut
 
 
 class AUTTests(unittest.TestCase):

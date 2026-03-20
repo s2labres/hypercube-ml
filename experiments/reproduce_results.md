@@ -64,8 +64,7 @@ To obtain the data from scratch, you need to:
 
 #### Table IV
 
-Table IV in Section V.B. shows the AUT (one year windows) for the two datasets; furthermore, it presents the average AUT
-and standard deviation.
+Table IV in Section V.B. shows the average AUT and standard deviation for the two datasets.
 
-To obtain the table, run:
-
+To obtain these values, run:
+`python -m experiments.temporal_luck.aut.compute_all_auts`

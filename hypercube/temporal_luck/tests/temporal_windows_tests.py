@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from temporal_luck.temporal_windows import training_slice_iterator, test_slice_iterator
+from hypercube.temporal_luck.temporal_windows import training_slice_iterator, test_slice_iterator
 
 
 class TemporalWindowsTests(unittest.TestCase):

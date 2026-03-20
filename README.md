@@ -82,28 +82,43 @@ class MyNewMalwareDetector(BaseDetector):
         """
     
 ```
-
 Please refer to the library repo for further information.
 
-To compute the **A-AUT** for your newly defined malware detector, you can use the APIs:
+To perform a **Temporal Luck** evaluation as discussed in the paper, you can use the `TemporalLuckEvaluator` 
+made available by the library.
 
-1. `temporal_luck.trainer.train_model` for training your model across all time splits.
-2. `temporal_luck.trainer.test_model` for evaluating your model across all time splits
+The following example shows how to perform a Temporal Luck evaluation using 6 months for training and 12 for testing.
+Notice that you can register multiple classifiers and multiple datasets per classifier. Being built on the Android 
+Malware Detectors library (https://github.com/s2labres/android_malware_detectors), it assumes that the dataset is 
+accompanied by a meta file where information such as timestamps and number of detections is provided for each sample.
 
 ```python
 import os
+import datetime
 
-from temporal_luck.trainer import train_classifier
-from temporal_luck.temporal_windows import training_slice_iterator
+from hypercube.temporal_luck.temporal_luck_evaluator import TemporalLuckEvaluator
 
-for start_date, end_date in training_slice_iterator():
-    save_dir = f"save_dir-{start_date}-{end_date}/"
-    os.makedirs(save_dir, exist_ok=True)
-    my_model = MyNewMalwareDetector(save_dir)
 
-    dataset = []
-    labels = []
+temporal_luck_evaluator = TemporalLuckEvaluator()
+temporal_luck_evaluator.register_classifier_class("MyNewMalwareDetector", MyNewMalwareDetector)
+temporal_luck_evaluator.register_dataset("dataset_1")
+temporal_luck_evaluator.register_vtt("dataset_1", 5)
+temporal_luck_evaluator.register_meta_path("dataset_1", "path_to_meta_file")
+temporal_luck_evaluator.register_date_type("dataset_1", "vt_first_submission_date")
+temporal_luck_evaluator.register_dataset_for_classifier("dataset_1", "MyNewMalwareDetector", "path_to_features_for_dataset_1")
 
+dataset_start_date, dataset_end_date = datetime.date(2021, 1, 1), datetime.date(2023, 12, 1)
+time_granularity, time_granularity_value = "monthly", 1
+training_window_length, test_window_length = 6, 12
+trainined_detectors_dir = "trained_detectors/"
+
+temporal_luck_evaluator.train_all(dataset_start_date, dataset_end_date, training_window_length, test_window_length, 
+                                  time_granularity, time_granularity_value, trainined_detectors_dir)
+
+
+results_dir = "temporal_luck_results/"
+temporal_luck_evaluator.evaluate_all(trainined_detectors_dir, dataset_start_date, dataset_end_date, results_dir,
+                                     time_granularity, time_granularity_value, training_window_length, test_window_length)
 ```
 
 

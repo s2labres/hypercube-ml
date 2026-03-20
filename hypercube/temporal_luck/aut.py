@@ -34,8 +34,9 @@ def average_aut(results_by_date: dict[date, dict[str, float]], metric: str, star
     for date_index in range(len(all_dates_in_interval) - 1):
         window_start, window_end = all_dates_in_interval[date_index], all_dates_in_interval[date_index + 1]
         all_dates_in_window = [_date for _date in results_by_date if window_start <= _date < window_end]
-        results_in_window = {_date: results_by_date[_date] for _date in all_dates_in_window}
-        aut_list.append(aut(results_in_window, metric))
+        if all_dates_in_window:
+            results_in_window = {_date: results_by_date[_date] for _date in all_dates_in_window}
+            aut_list.append(aut(results_in_window, metric))
 
     aut_list = np.asarray(aut_list)
     return np.mean(aut_list), np.std(aut_list)
