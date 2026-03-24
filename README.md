@@ -39,7 +39,7 @@ following line to your `requirements` file:
 
 To reproduce the results in the original paper, refer to `experiments/reproduce_results.md`.
 
-*The code and data for experiments on VTT and App Market is not yet available but will soon be released. 
+*The code and data for the experiments on VTT and App Market is not yet available but will be soon released. 
 Please expect this to be made available before 30/04/2026.*
 
 ### Use the library
@@ -89,7 +89,7 @@ class MyNewMalwareDetector(BaseDetector):
         """
     
 ```
-Please refer to the library repo for further information.
+Please refer to the Android Malware Detectors library repo for further information.
 
 To perform a **Temporal Luck** evaluation as discussed in the paper, you can use the `TemporalLuckEvaluator` 
 made available by the library.
