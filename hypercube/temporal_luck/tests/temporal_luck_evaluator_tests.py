@@ -223,10 +223,10 @@ class TemporalLuckEvaluatorTests(unittest.TestCase):
                                          call("root_fake_save_dir/FakeClassifier2", exist_ok=True), ],
                                         any_order=True)
         average_aut_mock.assert_has_calls(
-            [call({"a": 1}, "f1", dataset_min_date, dataset_max_date, time_granularity, time_granularity_value),
-             call({"b": 2}, "f1", dataset_min_date, dataset_max_date, time_granularity, time_granularity_value),
-             call({"c": 3}, "f1", dataset_min_date, dataset_max_date, time_granularity, time_granularity_value),
-             call({"d": 4}, "f1", dataset_min_date, dataset_max_date, time_granularity, time_granularity_value)],
+            [call({"a": 1}, "f1", dataset_min_date, dataset_max_date, time_granularity, test_window_length),
+             call({"b": 2}, "f1", dataset_min_date, dataset_max_date, time_granularity, test_window_length),
+             call({"c": 3}, "f1", dataset_min_date, dataset_max_date, time_granularity, test_window_length),
+             call({"d": 4}, "f1", dataset_min_date, dataset_max_date, time_granularity, test_window_length),],
             any_order=True
         )
         print_mock.assert_has_calls([
@@ -240,3 +240,7 @@ class TemporalLuckEvaluatorTests(unittest.TestCase):
                  f"A-AUT 0.0 (0.01)"),
         ])
         self.assertEqual(evaluate_classifier_mock.call_count, 4)
+
+
+if __name__ == '__main__':
+    unittest.main()

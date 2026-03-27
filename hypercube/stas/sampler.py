@@ -48,7 +48,8 @@ class STASSampler:
     def _get_all_goodware(self, population_descriptor):
         goodware = {}
         for sample in population_descriptor:
-            if self.detections_key in sample and int(sample[self.detections_key] or 15) == 0:
+            if (self.detections_key in sample and sample[self.detections_key] not in ["", None]
+                    and int(sample[self.detections_key]) == 0):
                 goodware[sample[self.sample_hash_type]] = parse_date(sample[self.timestamp_type])
         return goodware
 
@@ -63,7 +64,7 @@ class STASSampler:
             window_start, window_end = all_dates_in_interval[date_index], all_dates_in_interval[date_index + 1]
             malware_available = self._get_all_samples_in_time_interval(window_start, window_end, True)
             goodware_available = self._get_all_samples_in_time_interval(window_start, window_end, False)
-            malware_sample_size = compute_margin_of_error_sampling(len(malware_available))
+            malware_sample_size = compute_margin_of_error_sampling(len(malware_available), 2)
             goodware_sample_size = malware_sample_size * int(1 - malware_percentage) * 10
             malware_sample_size = int(malware_sample_size)
 

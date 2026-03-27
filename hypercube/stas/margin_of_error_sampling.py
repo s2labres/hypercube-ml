@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import norm
 
 
-def compute_margin_of_error_sampling(population_size: int, number_of_classes:int, margin_of_error: float = 0.015,
+def compute_margin_of_error_sampling(population_size: int, number_of_classes: int, margin_of_error: float = 0.015,
                                      confidence_level: float = 0.99):
     """
     Calculate the minimum sample size needed to represent the population of number_of_classes classes

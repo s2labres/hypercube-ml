@@ -1,0 +1,10 @@
+[
+  {"fake_hash": "m_1", "num_detection": 15, "timestamp": "15/1/2015"},
+  {"fake_hash": "m_2", "num_detection": 5, "timestamp": "15/2/2015"},
+  {"fake_hash": "m_3", "num_detection": 3, "timestamp": "15/3/2015"},
+  {"fake_hash": "m_4", "num_detection": 4, "timestamp": "15/4/2015"},
+  {"fake_hash": "g_1", "num_detection": 0, "timestamp": "15/1/2015"},
+  {"fake_hash": "g_2", "num_detection": 0, "timestamp": "15/2/2015"},
+  {"fake_hash": "g_3", "num_detection": 0, "timestamp": "15/3/2015"},
+  {"fake_hash": "g_4", "num_detection": 1, "timestamp": "15/4/2015"}
+]

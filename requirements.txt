@@ -6,5 +6,5 @@ tensorflow[and-cuda]==2.20.0
 tqdm==4.67.3
 dtw-python==1.7.4
 scipy>=1.15.1
-dtw
+dtw-python
 git+ssh://git@github.com/s2labres/android_malware_detectors.git@main#egg=android_malware_detectors
