@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=82.0.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hypercube-ml"
+version = "1.0.0"
+authors = [
+  { name="Dr Mario D'Onghia", email="m.donghia@ucl.ac.uk" },
+]
+description = "An implemention of the rolling time evaluations of malware classifiers through the Average Area Under Time and the STAS sampling algorithm."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["jsonlines==4.0.0", "matplotlib==3.10.8", "numpy>=2.4.2", "pandas>=3.0.1",
+                "tensorflow[and-cuda]>=2.20.0", "tqdm>=4.67.3", "dtw-python==1.7.4", "scipy>=1.15.1",
+                "android-malware-detectors @ git+ssh://git@github.com/s2labres/android_malware_detectors.git@main#egg=android_malware_detectors"]
+
+[tool.setuptools]
+packages = ["hypercube", "experiments"]

@@ -60,13 +60,13 @@ class STASSampler:
         all_dates_in_interval = generate_dates_in_interval(start_date, end_date, time_granularity,
                                                            time_granularity_value)
         all_dates_in_interval += [end_date]
-        for date_index in range(len(all_dates_in_interval - 1)):
+        for date_index in range(len(all_dates_in_interval) - 1):
             window_start, window_end = all_dates_in_interval[date_index], all_dates_in_interval[date_index + 1]
             malware_available = self._get_all_samples_in_time_interval(window_start, window_end, True)
             goodware_available = self._get_all_samples_in_time_interval(window_start, window_end, False)
-            malware_sample_size = compute_margin_of_error_sampling(len(malware_available), 2)
-            goodware_sample_size = malware_sample_size * int(1 - malware_percentage) * 10
-            malware_sample_size = int(malware_sample_size)
+            malware_sample_size = compute_margin_of_error_sampling(len(malware_available), 1)
+            goodware_sample_size = malware_sample_size * (1 - malware_percentage) // malware_percentage
+            malware_sample_size, goodware_sample_size = round(malware_sample_size), round(goodware_sample_size)
 
             malware_samples = random.sample(malware_available, malware_sample_size)
             goodware_samples = random.sample(goodware_available, min(goodware_sample_size, len(goodware_available)))

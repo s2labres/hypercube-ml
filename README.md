@@ -1,8 +1,8 @@
 # Hypercube-ML
 
 This repository contains the code for the 
-**Statistically representative, TESSERACT-guided Application Sampling strategy (STAS)** and for performing the rolling time
-window evaluation with the **Average Area Under Time (A-AUT)** as introduced in:
+**Statistically representative, TESSERACT-guided Application Sampling strategy (STAS)** and for the rolling time
+window evaluations with the **Average Area Under Time (A-AUT)** as introduced in:
 
 > **"Beyond the TESSERACT: Trustworthy Dataset Curation for Sound Evaluations of Android Malware Classifiers"**
 

@@ -1,5 +1,6 @@
 import unittest
 from datetime import date
+from unittest.mock import patch, call
 
 from hypercube.stas.sampler import STASSampler
 
@@ -31,7 +32,26 @@ class STASSamplerTests(unittest.TestCase):
                           "m_4": date(2015, 4, 15)})
 
     def test_sample_dataset(self):
-        pass
+        sample_side_effect = [["m_10", "m_13", "m_17"], ["g_11", "g_18", "g_19", "g_120"],
+                              ["m_21", "m_22", "m_24", "m_210"], ["g_22", "g_27", "g_220", "g_222"]]
+        get_all_samples_in_time_interval_side_effect = [[f"m_1{index}" for index in range(15)],
+                                                        [f"g_1{index}" for index in range(25)],
+                                                        [f"m_2{index}" for index in range(15)],
+                                                        [f"g_2{index}" for index in range(25)]]
+        with (patch("hypercube.stas.sampler.random.sample", side_effect=sample_side_effect) as random_sample_mock,
+              patch("hypercube.stas.sampler.compute_margin_of_error_sampling", side_effect=[3, 4])
+              as margin_of_error_mock,
+              patch.object(self.stas_sampler_extended_population, "_get_all_samples_in_time_interval",
+                           side_effect=get_all_samples_in_time_interval_side_effect)):
+            dataset = self.stas_sampler_extended_population.sample_dataset(
+                date(2015, 1, 1), date(2015, 2, 28), "monthly", 1, 0.40
+            )
+        self.assertEqual(dataset, ["m_10", "m_13", "m_17", "g_11", "g_18", "g_19", "g_120",
+                                   "m_21", "m_22", "m_24", "m_210", "g_22", "g_27", "g_220", "g_222"])
+        random_sample_mock.assert_has_calls(
+            [call([f"m_1{index}" for index in range(15)], 3), call([f"g_1{index}" for index in range(25)], 4),
+             call([f"m_2{index}" for index in range(15)], 4), call([f"g_2{index}" for index in range(25)], 5)])
+        margin_of_error_mock.assert_has_calls([call(15, 1), call(15, 1)])
 
     def test__get_all_samples_in_time_interval(self):
         start_date, end_date = date(2015, 1, 1), date(2015, 2, 28)
