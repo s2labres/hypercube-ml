@@ -1,5 +1,6 @@
 import datetime
 import random
+from pathlib import Path
 
 from android_malware_detectors.datasets_utils.dates import parse_date, generate_dates_in_interval
 from android_malware_detectors.utils import load_json
@@ -8,12 +9,12 @@ from hypercube.stas.margin_of_error_sampling import compute_margin_of_error_samp
 
 
 class STASSampler:
-    def __init__(self, population_descriptor_json_path, sample_hash_type, timestamp_type, detections_key, vtt):
+    def __init__(self, population_descriptor_json, sample_hash_type, timestamp_type, detections_key, vtt):
         """
-        :param population_descriptor_json_path: path to a JSON file containing a list of samples. Each entry must
-                                                    contain a hash value keyed by sample_hash_type, a timestamp
-                                                    keyed by timestamp_type, and a number of detections keyed by
-                                                    detections_key.
+        :param population_descriptor_json: path (str, Path) to a JSON file containing a list of samples. Alternatively,
+                                           a list of samples. Each entry must contain a hash value keyed by
+                                           sample_hash_type, a timestamp keyed by timestamp_type, and a number
+                                           of detections keyed by detections_key.
         :param sample_hash_type: the type of hash to be used to identify samples. Each sample entry in the population
                                     descriptor file must contain that sample_hash_type.
                                     For example, if sample_hash_type="sha256", there must be for each sample an
@@ -34,7 +35,13 @@ class STASSampler:
         self.detections_key = detections_key
         self.vtt = vtt
 
-        population_descriptor = load_json(population_descriptor_json_path)
+        if type(population_descriptor_json) in [str, Path]:
+            population_descriptor = load_json(population_descriptor_json)
+        elif isinstance(population_descriptor_json, list):
+            population_descriptor = population_descriptor_json
+        else:
+            raise TypeError("Population descriptor must be of type str, Path or list")
+    
         self.malware_to_timestamp_dict = self._get_all_malware(population_descriptor)
         self.goodware_to_timestamp_dict = self._get_all_goodware(population_descriptor)
 
