@@ -41,7 +41,7 @@ class STASSampler:
             population_descriptor = population_descriptor_json
         else:
             raise TypeError("Population descriptor must be of type str, Path or list")
-    
+
         self.malware_to_timestamp_dict = self._get_all_malware(population_descriptor)
         self.goodware_to_timestamp_dict = self._get_all_goodware(population_descriptor)
 
