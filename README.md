@@ -1,14 +1,12 @@
 # Hypercube-ML
 
-This repository contains the code for the 
+This repository contains the link to the hypercube dataset, and the code for the 
 **Statistically representative, TESSERACT-guided Application Sampling strategy (STAS)** and for the rolling time
 window evaluations with the **Average Area Under Time (A-AUT)** as introduced in:
 
-> **"Beyond the TESSERACT: Trustworthy Dataset Curation for Sound Evaluations of Android Malware Classifiers"**
+>  T. Chow, M. D'Onghia, L. Linhardt, Z. Kan, D. Arp, L. Cavallaro, F. Pierazzi, "**Beyond the TESSERACT: Trustworthy Dataset Curation for Sound Evaluations of Android Malware Classifiers**", IEEE SaTML 2026.
 
-> *Authors: T. Chow, M. D'Onghia, L. Linhardt, Z. Kan, D. Arp, L. Cavallaro, F. Pierazzi*
-
-If using this code for research, please cite us:
+If using this code or dataset for research, please cite us:
 
 ```bibtex
 @inproceedings{chow2025breaking,
@@ -21,10 +19,29 @@ If using this code for research, please cite us:
 
 Furthermore, the code for reproducing the results in the paper can be found in the `experiments` folder.
 
-The **Hypercube** dataset and all the data used in the paper can be found here:
+## Table of Contents
 
-[Hypercube dataset and paper data](https://liveuclac-my.sharepoint.com/:f:/g/personal/ucacier_ucl_ac_uk/IgDzMmmiN5p9TKbxnEKQXil-AYUPiXFrWDpeJZlawtm0jnQ?e=P9ybkn)
- 
+- [Hypercube Dataset](#hypercube-dataset)
+- [How-to](#how-to)
+  - [Setup](#setup)
+  - [Use the library](#use-the-library)
+  - [Reproduce paper results](#reproduce-paper-results)
+- [📧 Contact](#-contact)
+
+## Hypercube Dataset
+
+The **Hypercube** dataset can be found at this link: [Hypercube dataset](https://liveuclac-my.sharepoint.com/:f:/g/personal/ucacier_ucl_ac_uk/IgDzMmmiN5p9TKbxnEKQXil-AYUPiXFrWDpeJZlawtm0jnQ?e=P9ybkn)
+
+The `load.py` script is just an example, and we recommend to refer to the [Android Malware Detectors library](https://github.com/s2labres/android_malware_detectors) for proper loading of the dataset.
+
+The "hypercube" folder contains the dataset sampled in the [IEEE SaTML 2026 version of the paper](https://discovery.ucl.ac.uk/id/eprint/10220473/1/chow-satml26.pdf) (i.e., sampled with VTT=2). It includes two sub-folders: "original" (as described in the SaTML26 paper, sampled from 2021-23) and "extended_2024" (including sampled collected from 2021-2024 using the STAS methodology).
+
+The "legacy versions" include a sampling of the dataset done with VTT=4, which resulted from an [older arXiv version of the paper](https://arxiv.org/abs/2506.23814v1). 
+
+Relevant changelog for the dataset folder:
+* **12-08-2026** The `load.py` example script (found in the dataset folder) was modified to use VTT=2 (instead of 4). 
+* **13-07-2026** The main VTT=2 Dataset has been separated into: original (2021-2023) and extended_2024 (2021-2024).
+* **29-06-2026**: RAMDA features for the official hypercube have been updated.
 
 ## How-to
 
@@ -34,13 +51,6 @@ We recommend installing this repo as a pip package. Either run `pip install .` f
 following line to your `requirements` file:
 
 `git+ssh://git@github.com/s2labres/hypercube-ml.git@main#egg=hypercube-ml`
-
-### Reproduce paper results
-
-To reproduce the results in the original paper, refer to `experiments/reproduce_results.md`.
-
-*The code and data for the experiments on VTT and App Market is not yet available but will be soon released. 
-Please expect this to be made available before 30/04/2026.*
 
 ### Use the library
 
@@ -162,6 +172,12 @@ new_dataset_hash_list = stas_sampler.sample_dataset(dataset_start_date, dataset_
                                                     time_granularity_value=1, malware_percentage=0.1)
 ```
 
+### Reproduce paper results
+
+To reproduce the results in the original paper, refer to `experiments/reproduce_results.md`.
+
+*The code and data for the experiments on VTT and App Market is not yet available but will be soon released.*
 
 ## 📧 Contact
-For questions regarding the status of this research, please contact Dr Mario D'Onghia at m.donghia@ucl.ac.uk.
+
+For questions regarding the status of this research or this repository, please contact Dr Mario D'Onghia at m.donghia@ucl.ac.uk.
