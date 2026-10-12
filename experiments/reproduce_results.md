@@ -68,3 +68,19 @@ Table IV in Section V.B. shows the average AUT and standard deviation for the tw
 
 To obtain these values, run:
 `python -m experiments.temporal_luck.aut.compute_all_auts`
+
+### App Markets
+
+The randomly sampled APKs (both the shas and features) are made available in `data/app_markets/`. If wanting to regenerate
+them, you must download the CSV file from AndroZoo with the crawl date `added` and run:
+
+`python -m experiments.markets.generate_datasets`
+
+This will override the APKs selected in the folder `data/app_markets/shas`. However, you will then need to download all
+the samples from AndroZoo and process them into the required feature representations.
+
+#### Table VI
+
+To obtain the results in Table VI of the paper, run:
+
+`python -m experiments.markets.evaluate_all_scenarios DrebinSVM DeepDrebin HCC RAMDA MalScan`

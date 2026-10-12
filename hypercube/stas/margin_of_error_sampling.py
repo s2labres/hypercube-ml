@@ -23,7 +23,7 @@ def compute_margin_of_error_sampling(population_size: int, number_of_classes: in
 
     numerator = 4 * (population_size - 1) * margin_of_error ** 2
     if number_of_classes == 1:
-        denominator = _z_score(number_of_classes)
+        denominator = _z_score(confidence_level)
     else:
         denominator = _z_score((1 - (1 - confidence_level) / (number_of_classes - 1))) ** 2
     sample_size = population_size * (numerator / denominator + 1) ** -1
